@@ -1,4 +1,5 @@
-import { ReactNode, createContext, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { createContext } from 'use-context-selector'
 import { api } from '../services/api'
 
 interface UserData {
@@ -50,9 +51,9 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
     followers: 0,
   })
 
-  const setSearchQuery = (query: string) => {
+  const setSearchQuery = useCallback((query: string) => {
     setQuery(query)
-  }
+  }, [])
 
   async function fetchUser(user: string) {
     const response = await api.get<UserData>(`/users/${user}`)

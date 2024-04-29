@@ -1,12 +1,32 @@
-import { ComponentProps } from 'react'
-import { useFormContext } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { useContextSelector } from 'use-context-selector'
+import { z } from 'zod'
+import { userContext } from '../../context/userContext'
 
-interface SearchPostsFormProps extends ComponentProps<'input'> {}
+const SearchFormValidationSchema = z.object({
+  query: z.string().nullable(),
+})
 
-export function SearchPostsForm({ ...props }: SearchPostsFormProps) {
-  const { register } = useFormContext()
+type SearchFormType = z.infer<typeof SearchFormValidationSchema>
+
+export function SearchPostsForm() {
+  const setSearchQuery = useContextSelector(
+    userContext,
+    (context) => context.setSearchQuery,
+  )
+  const { register, handleSubmit } = useForm<SearchFormType>({
+    resolver: zodResolver(SearchFormValidationSchema),
+    defaultValues: { query: '' },
+  })
+
+  const handleSearchFormSubmit = (data: SearchFormType) => {
+    event?.preventDefault()
+    setSearchQuery(data.query ?? '')
+  }
+
   return (
-    <>
+    <form onSubmit={handleSubmit(handleSearchFormSubmit)}>
       <label
         htmlFor="query"
         className="flex rounded-md border border-solid border-base-border bg-base-input px-4 py-3 has-[:focus]:border-brand"
@@ -16,11 +36,10 @@ export function SearchPostsForm({ ...props }: SearchPostsFormProps) {
           id="query"
           type="text"
           placeholder="Buscar conteúdo"
-          {...props}
           {...register('query')}
           className="bg-transparent text-base-text placeholder:text-base-label focus:outline-none"
         />
       </label>
-    </>
+    </form>
   )
 }

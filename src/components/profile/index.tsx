@@ -1,9 +1,9 @@
 import { ArrowSquareOut, Buildings, GithubLogo, Users } from 'phosphor-react'
-import { useContext } from 'react'
+import { useContextSelector } from 'use-context-selector'
 import { userContext } from '../../context/userContext'
 
 export function Profile() {
-  const { user } = useContext(userContext)
+  const user = useContextSelector(userContext, (context) => context.user)
   return (
     <div className="flex gap-8 rounded-[0.625rem] bg-base-profile p-8">
       <img
