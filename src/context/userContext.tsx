@@ -16,6 +16,7 @@ export interface PostData {
   title: string
   createdAt: Date
   body: string
+  number: number
 }
 
 interface PostResponse {

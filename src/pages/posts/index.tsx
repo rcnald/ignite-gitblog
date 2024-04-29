@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useContext } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { Link } from 'react-router-dom'
 import { z } from 'zod'
 import { Post } from '../../components/post'
 import { Profile } from '../../components/profile'
@@ -48,7 +49,11 @@ export function Posts() {
         </div>
         <div className="grid grid-cols-2 gap-8">
           {posts.map((post) => {
-            return <Post key={post.id} post={post} />
+            return (
+              <Link key={post.id} to={`/details/${post.number}`}>
+                <Post post={post} />
+              </Link>
+            )
           })}
         </div>
       </main>
