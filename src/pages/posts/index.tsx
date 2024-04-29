@@ -1,8 +1,32 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useContext } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { Post } from '../../components/post'
 import { Profile } from '../../components/profile'
 import { SearchPostsForm } from '../../components/searchPostsForm'
+import { userContext } from '../../context/userContext'
+
+const SearchFormValidationSchema = z.object({
+  query: z.string().nullable(),
+})
+
+type SearchFormType = z.infer<typeof SearchFormValidationSchema>
 
 export function Posts() {
+  const { posts, setSearchQuery } = useContext(userContext)
+  const searchForm = useForm<SearchFormType>({
+    resolver: zodResolver(SearchFormValidationSchema),
+    defaultValues: { query: '' },
+  })
+
+  const handleSearchFormSubmit = (data: SearchFormType) => {
+    event?.preventDefault()
+    setSearchQuery(data.query ?? '')
+  }
+
+  const { handleSubmit } = searchForm
+
   return (
     <>
       <Profile />
@@ -12,14 +36,20 @@ export function Posts() {
             <h1 className="text-lg font-bold text-base-subtitle">
               Publicações
             </h1>
-            <span className="text-sm text-base-span">6 publicações</span>
+            <span className="text-sm text-base-span">
+              {posts.length} publicações
+            </span>
           </span>
-          <form>
-            <SearchPostsForm />
+          <form onSubmit={handleSubmit(handleSearchFormSubmit)}>
+            <FormProvider {...searchForm}>
+              <SearchPostsForm />
+            </FormProvider>
           </form>
         </div>
         <div className="grid grid-cols-2 gap-8">
-          <Post />
+          {posts.map((post) => {
+            return <Post key={post.id} post={post} />
+          })}
         </div>
       </main>
     </>
